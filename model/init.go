@@ -4,16 +4,16 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-
-	//
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 )
 
 // DB 数据库链接单例
 var DB *gorm.DB
 
 // Database 在中间件中初始化mysql链接
-func Database(connString string) {
+func Database(connString string, flag bool) {
+	println("mysql:", connString)
 	db, err := gorm.Open("mysql", connString)
 	db.LogMode(true)
 	// Error
@@ -29,6 +29,8 @@ func Database(connString string) {
 	db.DB().SetConnMaxLifetime(time.Second * 30)
 
 	DB = db
+	if flag {
+		migration()
+	}
 
-	migration()
 }
