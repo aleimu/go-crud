@@ -63,6 +63,16 @@ SESSION_SECRE="" # Seesion密钥，必须设置而且不要泄露
 GIN_MODE="debug"
 ```
 
+```shell
+# window下不可以带双引号
+MYSQL_DSN=db_user:db_password@/db_name?charset=utf8&parseTime=True&loc=Local # Mysql连接地址
+REDIS_ADDR=127.0.0.1:6379 # Redis端口和地址
+REDIS_PW= # Redis连接密码
+REDIS_DB= # Redis库从0到10
+SESSION_SECRE= # Seesion密钥，必须设置而且不要泄露
+GIN_MODE=debug
+```
+
 ## Go 依赖
 
 本项目使用[govendor](https://github.com/kardianos/govendor)管理依赖，以上描述的依赖已经提交到仓库之中。

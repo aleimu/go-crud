@@ -4,7 +4,7 @@ import "time"
 
 //  点击模型
 type Ctr struct {
-	ID         uint `gorm:"primary_key"`
+	Model
 	Show       int
 	Click      int
 	Crt        float32
@@ -12,6 +12,4 @@ type Ctr struct {
 	ClickDay   string `gorm:"size:1000"`
 	Node       string `gorm:"size:1000"`
 	CreateDate time.Time
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
 }
