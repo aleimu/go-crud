@@ -1,16 +1,14 @@
-package api
+package server
 
 import (
-	"go-crud/serializer"
-	"go-crud/service"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go-crud/serializer"
 )
 
 // UserRegister 用户注册接口
 func UserRegister(c *gin.Context) {
-	var service service.UserRegisterService
+	var service UserRegisterService
 	if err := c.ShouldBind(&service); err == nil {
 		if user, err := service.Register(); err != nil {
 			c.JSON(200, err)
@@ -25,7 +23,7 @@ func UserRegister(c *gin.Context) {
 
 // UserLogin 用户登录接口
 func UserLogin(c *gin.Context) {
-	var service service.UserLoginService
+	var service UserLoginService
 	if err := c.ShouldBind(&service); err == nil {
 		if user, err := service.Login(); err != nil {
 			c.JSON(200, err)

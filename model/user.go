@@ -7,7 +7,7 @@ import (
 
 // 基本模型
 type Model struct {
-	ID        uint `gorm:"primary_key"`
+	ID        int `gorm:"primary_key"`
 	CreatedAt time.Time // 将会设置`CreatedAt`默认为当前时间
 	UpdatedAt time.Time // 新增/修改 都将会设置`UpdatedAt`默认为当前时间
 }

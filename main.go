@@ -2,7 +2,7 @@ package main
 
 import (
 	"go-crud/conf"
-	"go-crud/server"
+	"go-crud/router"
 )
 
 func main() {
@@ -10,6 +10,6 @@ func main() {
 	conf.Init()
 
 	// 装载路由
-	r := server.NewRouter()
-	r.Run(":3000")
+	r := router.NewRouter()
+	r.Run(":3001")
 }

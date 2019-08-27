@@ -1,16 +1,16 @@
-package api
+package server
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	. "go-crud/model"
+	. "go-crud/util"
 	"net/http"
-	"strconv"
 )
 
-func GetStyle(c *gin.Context) {
+func GetGroup(c *gin.Context) {
 	id := c.Query("id")
-	group, err := FindStyleById(id)
+	group, err := FindGroupById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": ERR, "msg": err})
 	} else {
@@ -18,39 +18,35 @@ func GetStyle(c *gin.Context) {
 	}
 
 }
-func AddStyle(c *gin.Context) {
+func AddGroup(c *gin.Context) {
 	name := c.PostForm("name")
-	DB.Create(&Style{ImageName: name, Status: 1})
+	DB.Create(&Group{Name: name, Status: 1})
 	c.JSON(http.StatusOK, gin.H{"code": OK, "mgs": "OK"})
 }
 
-func SetStyle(c *gin.Context) {
+func SetGroup(c *gin.Context) {
 	id := c.PostForm("id")
 	name := c.PostForm("name")
 	status := c.DefaultPostForm("status", "1")
 	fmt.Sprintln("id:%s, name:%s, status:%s", id, name, status)
-	statusTemp, err := strconv.Atoi(status)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": ERR, "err": err})
-	}
-	group, err := FindStyleById(id)
+	group, err := FindGroupById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": ERR, "msg": err})
 		return
 	}
-	group.ImageName = name
-	group.Status = statusTemp
+	group.Name = name
+	group.Status = Str2Int(status)
 	DB.Save(&group)
 	c.JSON(http.StatusOK, gin.H{"code": OK, "data": group})
 
 	//DB.Model(&group).Where("id = ?", id).Update("name", name)
 }
 
-func DelStyle(c *gin.Context) {
+func DelGroup(c *gin.Context) {
 	id := c.Query("id")
 	//status := c.DefaultQuery("status", "1")
 	//strconv.Atoi(status)
 	//DB.Delete(&email)
-	DB.Where("id = ?", id).Delete(Style{})
+	DB.Where("id = ?", id).Delete(Group{})
 	c.JSON(http.StatusOK, gin.H{"code": OK, "msg": "OK"})
 }

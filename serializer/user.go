@@ -4,7 +4,7 @@ import "go-crud/model"
 
 // User 用户序列化器
 type User struct {
-	ID        uint   `form:"id" json:"id"`
+	ID        int   `form:"id" json:"id"`
 	UserName  string `form:"name" json:"user_name"`
 	Nickname  string `form:"name" json:"nickname"`
 	Status    string `json:"status"`

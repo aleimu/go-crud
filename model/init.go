@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -33,4 +34,12 @@ func Database(connString string, flag bool) {
 		migration()
 	}
 
+}
+
+func Str2Int(str string) int {
+	tmp, err := strconv.Atoi(str)
+	if err == nil {
+		return tmp
+	}
+	panic(err)
 }

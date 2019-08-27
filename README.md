@@ -1,18 +1,9 @@
 # Golang Fast CRUD
 
-https://github.com/bydmm/go-crud
-
-## 视频实况教程
-
-[让我们写个G站吧！Golang全栈编程实况：第一集，为何而学](https://www.bilibili.com/video/av56437048)
-
-[让我们写个G站吧！Golang全栈编程实况：第二集，伟大航路的开始](https://www.bilibili.com/video/av56462267)
-
-[让我们写个G站吧！Golang全栈编程实况：第三集，视频补完计划](https://www.bilibili.com/video/av56582832)
-
-## 使用Go CRUD开发的项目实例
-
-https://github.com/bydmm/giligili
+## 参考 
+   - https://github.com/bydmm/go-crud   本项目的源项目
+   - https://github.com/crawlab-team/crawlab   基于Golang的分布式爬虫管理平台,涉及内容丰富,值得学习
+   - https://github.com/gin-gonic/examples  gin 的实例,帮助学习gin的特性
 
 ## 目的
 
@@ -33,22 +24,26 @@ https://github.com/bydmm/giligili
 
 本项目已经预先实现了一些常用的代码方便参考和复用:
 
-1. 创建了用户模型
-2. 实现了```/api/v1/user/register```用户注册接口
-3. 实现了```/api/v1/user/login```用户登录接口
-4. 实现了```/api/v1/user/me```用户资料接口(需要登录后获取session)
-5. 实现了```/api/v1/user/logout```用户登出接口(需要登录后获取session)
+- 用户管理
+    1. 创建了用户模型
+    2. 实现了```/v1/user/register```用户注册接口
+    3. 实现了```/v1/user/login```用户登录接口
+    4. 实现了```/v1/user/me```用户资料接口(需要登录后获取session)
+    5. 实现了```/v1/user/logout```用户登出接口(需要登录后获取session)
+- 图片管理
+- 分组管理
+- 广告管理
+- 定时任务
 
-本项目已经预先创建了一系列文件夹划分出下列模块:
+## 文件夹划分
 
-1. api文件夹就是MVC框架的controller，负责协调各部件完成任务
-2. model文件夹负责存储数据库模型和数据库操作相关的代码
-3. service负责处理比较复杂的业务，把业务代码模型化可以有效提高业务代码的质量（比如用户注册，充值，下单等）
-4. serializer储存通用的json模型，把model得到的数据库模型转换成api需要的json对象
-5. cache负责redis缓存相关的代码
-6. auth权限控制文件夹
-7. util一些通用的小工具
-8. conf放一些静态存放的配置文件，其中locales内放置翻译相关的配置文件
+1. router 文件夹就是MVC框架的controller，负责协调各部件完成任务
+2. model 文件夹负责存储数据库模型和基础性的数据库操作相关的代码
+3. server 负责处理比较复杂的业务，把业务代码模型化可以有效提高业务代码的质量（比如用户注册，充值，下单等）
+4. serializer 储存通用的json模型和struct，把model得到的数据库模型转换成api需要的json对象
+5. cache 负责redis缓存相关的代码
+6. util 一些通用的小工具
+7. conf 放一些静态存放的配置文件，其中locales内放置翻译相关的配置文件
 
 ## Godotenv
 
@@ -73,16 +68,15 @@ SESSION_SECRE= # Seesion密钥，必须设置而且不要泄露
 GIN_MODE=debug
 ```
 
-## Go 依赖
+## Go Mod
 
-本项目使用[govendor](https://github.com/kardianos/govendor)管理依赖，以上描述的依赖已经提交到仓库之中。
-下面是你想后期修改依赖的准备工作
+本项目使用[Go Mod](https://github.com/golang/go/wiki/Modules)管理依赖。
 
 ```shell
-go get -u github.com/kardianos/govendor
-govendor init
+go mod init go-crud
+export GOPROXY=http://mirrors.aliyun.com/goproxy/
+go run main.go // 自动安装
 ```
-
 ## 运行
 
 ```shell
