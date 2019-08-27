@@ -1,7 +1,7 @@
 # Golang Fast CRUD
 
 ## 参考 
-   - https://github.com/bydmm/go-crud   本项目的源项目
+   - https://github.com/bydmm/singo   本项目的起源
    - https://github.com/crawlab-team/crawlab   基于Golang的分布式爬虫管理平台,涉及内容丰富,值得学习
    - https://github.com/gin-gonic/examples  gin 的实例,帮助学习gin的特性
 
