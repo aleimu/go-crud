@@ -1,8 +1,13 @@
 package util
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"math/rand"
+	"net/smtp"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -25,6 +30,18 @@ func RandStringRunes(n int) string {
 	}
 	return string(b)
 }
+// 格式化时间
+func DateFormat(date time.Time, layout string) string {
+	return date.Format(layout)
+}
+
+func Str2Int(str string) int {
+	tmp, err := strconv.Atoi(str)
+	if err == nil {
+		return tmp
+	}
+	panic(err)
+}
 
 func GetRandomString(l int) string {
 	bytes := []byte("0123456789abcdefghijklmnopqrstuvwxyz")
@@ -37,12 +54,57 @@ func GetRandomString(l int) string {
 	return string(result)
 }
 
-//func GetRandomString() string {
-//	b := make([]byte, 10)
-//	_, err := rand.Read(b)
-//	if err != nil {
-//		fmt.Println(err.Error())
-//	}
-//	fmt.Println(time.Now().UnixNano())
-//	return string(b)
-//}
+
+// 计算字符串的md5值
+func Md5(source string) string {
+	md5h := md5.New()
+	md5h.Write([]byte(source))
+	return hex.EncodeToString(md5h.Sum(nil))
+}
+
+func GetCurrentTime() time.Time {
+	loc, _ := time.LoadLocation("Asia/Shanghai")
+	return time.Now().In(loc)
+}
+
+func SendToMail(user, password, host, to, subject, body, mailtype string) error {
+	hp := strings.Split(host, ":")
+	auth := smtp.PlainAuth("", user, password, hp[0])
+	var content_type string
+	if mailtype == "html" {
+		content_type = "Content-Type: text/" + mailtype + "; charset=UTF-8"
+	} else {
+		content_type = "Content-Type: text/plain" + "; charset=UTF-8"
+	}
+	msg := []byte("To: " + to + "\r\nFrom: " + user + "\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
+	send_to := strings.Split(to, ";")
+	return smtp.SendMail(host, auth, user, send_to, msg)
+}
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+type errorString struct {
+	s string
+}
+
+type errorInfo struct {
+	Time     string `json:"time"`
+	Alarm    string `json:"alarm"`
+	Message  string `json:"message"`
+	Filename string `json:"filename"`
+	Line     int    `json:"line"`
+	Funcname string `json:"funcname"`
+}
+
+func (e *errorString) Error() string {
+	return e.s
+}

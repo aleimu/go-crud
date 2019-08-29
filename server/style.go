@@ -25,6 +25,7 @@ func StyleList(c *gin.Context) {
 	id := c.Query("id")
 	status := c.Query("status")
 	system := c.Query("system")
+	fmt.Println("Query:", id, status, system)
 	if id != "" {
 		data["id"] = id
 	}
@@ -34,7 +35,8 @@ func StyleList(c *gin.Context) {
 	if system != "" {
 		data["system"] = system
 	}
-	style, err := model.GetStyleList(data, 1, 10, " id desc")
+	fmt.Println("data:", data)
+	style, err := model.GetStyleList(data, 0, 10, " id desc")
 	count := model.GetStyleTotal(data)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": ERR, "msg": err})
@@ -46,10 +48,11 @@ func StyleList(c *gin.Context) {
 
 func AddStyle(c *gin.Context) {
 	var styleform model.StyleForm
-	//err := c.ShouldBind(styleform)
-	err := c.ShouldBindQuery(styleform)
+	err := c.ShouldBind(&styleform) // form 必须这样绑定,json 也可以用这个方式校验,看源码可以看出是依据c.Request.Method, c.ContentType()推断出合适的类型
+	// err := c.ShouldBindJSON(&newImage)	// 只有json可以
 	if err != nil {
-		fmt.Println("err:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	fmt.Sprintln("styleform", styleform)
 	err = model.AddNewStyle(styleform)
@@ -61,25 +64,21 @@ func AddStyle(c *gin.Context) {
 
 }
 
-func SetStyle(c *gin.Context) {
-	id := c.Query("id")
-	style, err := model.GetStyleById(id)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": ERR, "msg": err})
-		return
-	}
-	var styleform model.StyleForm
-	err = c.ShouldBind(styleform)
+func UpdateStyle(c *gin.Context) {
+	var sql model.StyleForm
+	var ok int64 = 1
+	err := c.ShouldBind(sql)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
-	fmt.Sprintln("styleform", styleform)
-	style.ImageName = styleform.ImageName
-	//style.Status = styleform.Status
-	model.DB.Save(&style)
-	c.JSON(http.StatusOK, gin.H{"code": OK, "data": style})
-
-	//DB.Model(&group).Where("id = ?", id).Update("name", name)
+	fmt.Sprintln("sql", sql)
+	result := model.DB.Model(&model.Style{}).Where("id = ?", sql.Id).Updates(&model.Style{ImageName: sql.ImageName, Url: sql.Url, GroupId: sql.GroupId, Status: sql.Status}) // model式批量更新
+	fmt.Println("result:", result, result.Error, result.RowsAffected)
+	if result.RowsAffected == ok || result.Error != nil {
+		c.JSON(http.StatusOK, gin.H{"code": OK, "data": sql})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": OK, "data": sql})
 }
 
 func DelStyle(c *gin.Context) {

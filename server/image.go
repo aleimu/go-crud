@@ -32,7 +32,7 @@ func Upload(c *gin.Context) {
 
 func GetImage(c *gin.Context) {
 	var image = model.Image{}
-	image.ID = model.Str2Int(c.Query("id"))
+	image.ID = Str2Int(c.Query("id"))
 	result, err := model.GetImage(image);
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

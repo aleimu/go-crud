@@ -17,10 +17,15 @@
 2. [GORM](http://gorm.io/docs/index.html): ORM工具。本项目需要配合Mysql使用 
 3. [Gin-Session](https://github.com/gin-contrib/sessions): Gin框架提供的Session操作工具
 4. [Go-Redis](https://github.com/go-redis/redis): Golang Redis客户端
-5. [godotenv](https://github.com/joho/godotenv): 开发环境下的环境变量工具，方便使用环境变量
+5. [Godotenv](https://github.com/joho/godotenv): 开发环境下的环境变量工具，方便使用环境变量
 6. [Gin-Cors](https://github.com/gin-contrib/cors): Gin框架提供的跨域中间件
-7. 自行实现了国际化i18n的一些基本功能
-8. 本项目是使用基于cookie实现的session来保存登录状态的，如果需要可以自行修改为token验证
+7. [Cron](https://github.com/robfig/cron): 定时任务管理
+8. [Log](https://github.com/sirupsen/logrus) : 日志
+
+其他
+
+1. 自行实现了国际化i18n的一些基本功能
+2. 本项目是使用基于cookie实现的session来保存登录状态的，如果需要可以自行修改为token验证
 
 本项目已经预先实现了一些常用的代码方便参考和复用:
 

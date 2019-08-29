@@ -8,6 +8,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	LogFilePath = "./logs/"
+	LogFileName = "my.log"
+)
+
+
 // Init 初始化配置项
 func Init() {
 	// 从本地读取环境变量
