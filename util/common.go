@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"math/rand"
 	"net/smtp"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -15,9 +14,6 @@ const (
 	OK  = 1000
 	ERR = 1500
 )
-
-//上传文件到指定的路径
-var FilePath = os.Getenv("UPLOADFILE") + string(os.PathSeparator)
 
 // RandStringRunes 返回随机字符串
 func RandStringRunes(n int) string {
@@ -30,6 +26,7 @@ func RandStringRunes(n int) string {
 	}
 	return string(b)
 }
+
 // 格式化时间
 func DateFormat(date time.Time, layout string) string {
 	return date.Format(layout)
@@ -53,7 +50,6 @@ func GetRandomString(l int) string {
 
 	return string(result)
 }
-
 
 // 计算字符串的md5值
 func Md5(source string) string {
@@ -79,17 +75,6 @@ func SendToMail(user, password, host, to, subject, body, mailtype string) error 
 	msg := []byte("To: " + to + "\r\nFrom: " + user + "\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
 	send_to := strings.Split(to, ";")
 	return smtp.SendMail(host, auth, user, send_to, msg)
-}
-
-func PathExists(path string) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return false, err
 }
 
 type errorString struct {

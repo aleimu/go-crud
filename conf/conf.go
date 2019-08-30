@@ -8,16 +8,21 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const (
+var (
 	LogFilePath = "./logs/"
 	LogFileName = "my.log"
+	FilePath    = "./upload/"
 )
-
 
 // Init 初始化配置项
 func Init() {
 	// 从本地读取环境变量
-	godotenv.Load()
+	err := godotenv.Load()
+	if err == nil {
+		LogFilePath = os.Getenv("LogFilePath")
+		LogFileName = os.Getenv("LogFileName")
+		FilePath = os.Getenv("UPLOADFILE") + string(os.PathSeparator)
+	}
 
 	// 读取翻译文件
 	if err := LoadLocales("conf/locales/zh-cn.yaml"); err != nil {

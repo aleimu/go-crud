@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go-crud/conf"
 	"go-crud/model"
 	. "go-crud/util"
 	"net/http"
@@ -21,7 +22,7 @@ func Upload(c *gin.Context) {
 	}
 	//更换图片名防止重复
 	filename := fmt.Sprintf("%s_%s_%s", strconv.FormatInt(time.Now().Unix(), 10), GetRandomString(10), filepath.Base(file.Filename))
-	if err := c.SaveUploadedFile(file, FilePath+filename); err != nil {
+	if err := c.SaveUploadedFile(file, conf.FilePath+filename); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": OK, "msg": fmt.Sprintf("upload file err: %s", err.Error())})
 		return
 	}

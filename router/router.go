@@ -2,9 +2,9 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"go-crud/conf"
 	"go-crud/middleware"
 	"go-crud/server"
-	"go-crud/util"
 	"net/http"
 	"os"
 	"time"
@@ -44,10 +44,12 @@ func NewRouter() *gin.Engine {
 		v0.GET("/test2", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"hello": "world"})
 		})
+		// 重定向到外部
 		v0.GET("/test3", func(c *gin.Context) {
 			c.Redirect(http.StatusFound, "wwww.baidu.com")
 		})
-		v0.StaticFS("/image", http.Dir("./upload/")) // 静态文件目录,不适合单个文件查看
+		// 静态文件目录,不适合单个文件查看
+		v0.StaticFS("/image", http.Dir("./upload/"))
 		//r.StaticFile("/image/:filename", "./upload/")
 		//1. 异步
 		r.GET("/async", func(c *gin.Context) {
@@ -81,44 +83,43 @@ func NewRouter() *gin.Engine {
 	// 广告管理路由
 	v2 := r.Group("/v1")
 	{
-		// 上传图片 curl -X POST http://localhost:3000/v1/upload -F "file=@a.jpg" -H "Content-Type: multipart/form-data"
-		v2.POST("/upload", server.Upload)
-		// 新增图片
-		// 上传图片form curl -v -X POST "127.0.0.1:3000/v1/image" -d "group_id=1&name=aaa&url=bbb&status=1" -H "Content-Type: multipart/form-data"
+		// 上传图片
+		v2.POST("/upload", server.Upload) // 上传图片 curl -X POST http://localhost:3000/v1/upload -F "file=@a.jpg" -H "Content-Type: multipart/form-data"
+		// 新增图片信息
+		v2.POST("/image", server.AddImage) // 上传图片form curl -v -X POST "127.0.0.1:3000/v1/image" -d "group_id=1&name=aaa&url=bbb&status=1" -H "Content-Type: multipart/form-data"
 		// 上传图片json curl -v -X POST "127.0.0.1:3000/v1/image" -d "{\"group_id\":1,\"name\":\"aaa\",\"url\":\"bbb\",\"status\":1}" -H "Content-Type: application/json"
-		v2.POST("/image", server.AddImage)
 		// 查询图片详情
 		v2.GET("/image", server.GetImage2)
 		// 删除图片
 		v2.DELETE("/image", server.DelImage)
 		// 删除图片
 		v2.PUT("/image", server.UpdateImage)
-		// 查看图片 127.0.0.1:3000/v1/image/a.jpg
-		v2.GET("/image/:filename", func(c *gin.Context) {
+		// 查看图片
+		v2.GET("/image/:filename", func(c *gin.Context) { //127.0.0.1:3000/v1/image/a.jpg
 			filename := c.Param("filename") // 路径参数
-			c.File(util.FilePath + filename)
+			c.File(conf.FilePath + filename)
 		})
-		// curl "127.0.0.1:3000/v1/group?id=2"
-		v2.GET("/group", server.GetGroup)
-		// curl -X POST "127.0.0.1:3000/v1/group" -d"name=aaa"
-		v2.POST("/group", server.AddGroup)
-		// curl -X PUT "127.0.0.1:3000/v1/group" -d"id=1&name=bbbb"
-		v2.PUT("/group", server.UpdateGroup)
-		// curl -X DELETE "127.0.0.1:3000/v1/group?id=1"
-		v2.DELETE("/group", server.DelGroup)
+		// 查询分组详情
+		v2.GET("/group", server.GetGroup) // curl "127.0.0.1:3000/v1/group?id=2"
+		// 新增分组
+		v2.POST("/group", server.AddGroup) // curl -X POST "127.0.0.1:3000/v1/group" -d"name=aaa"
+		// 修改分组信息/状态
+		v2.PUT("/group", server.UpdateGroup) //curl -X PUT "127.0.0.1:3000/v1/group" -d"id=1&name=bbbb"
+		// 删除分组
+		v2.DELETE("/group", server.DelGroup) //url -X DELETE "127.0.0.1:3000/v1/group?id=1"
 
-		// curl "127.0.0.1:3000/v1/style?id=2"
-		v2.GET("/style", server.GetStyle)
-		// curl -v -X POST "127.0.0.1:3001/v1/style" -d "group_id=1&image_id=1&image_url=www&image_name=qqqq&url=qqwqw&oper_id=123&oper_name=321"
-		v2.POST("/style", server.AddStyle)
-		// curl -v -X PUT "127.0.0.1:3001/v1/style" -d "id=1&group_id=2&image_id=2&image_url=www&image_name=qqqq&url=qqwqw&oper_id=123&oper_name=321"
-		v2.PUT("/style", server.UpdateStyle)
-		// curl -X DELETE "127.0.0.1:3000/v1/style?id=1"
-		v2.DELETE("/style", server.DelStyle)
-		// curl "127.0.0.1:3000/v1/styles?id=2"
-		v2.GET("/styles", server.StyleList)
+		// 获取广告信息
+		v2.GET("/style", server.GetStyle) //curl "127.0.0.1:3000/v1/style?id=2"
+		// 新增广告模式
+		v2.POST("/style", server.AddStyle) //curl -v -X POST "127.0.0.1:3001/v1/style" -d "group_id=1&image_id=1&image_url=www&image_name=qqqq&url=qqwqw&oper_id=123&oper_name=321"
+		// 修改模式
+		v2.PUT("/style", server.UpdateStyle) //curl -v -X PUT "127.0.0.1:3001/v1/style" -d "id=1&group_id=2&image_id=2&image_url=www&image_name=qqqq&url=qqwqw&oper_id=123&oper_name=321"
+		// 删除
+		v2.DELETE("/style", server.DelStyle) //curl -X DELETE "127.0.0.1:3000/v1/style?id=1"
+		// 查询模式列表
+		v2.GET("/styles", server.StyleList) //curl "127.0.0.1:3000/v1/styles?id=2"
 
-		// 任务
+		// todo
 		v2.GET("/tasks", server.GetStyle)        // 任务列表
 		v2.GET("/tasks/:id", server.AddStyle)    // 任务详情
 		v2.PUT("/tasks", server.UpdateStyle)     // 派发任务
