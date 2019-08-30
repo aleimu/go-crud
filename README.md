@@ -19,15 +19,15 @@
 
 本项目已经整合了许多开发API所必要的组件：
 
-    1. [Gin](https://github.com/gin-gonic/gin): 轻量级Web框架，自称路由速度是golang最快的 
-    2. [GORM](http://gorm.io/docs/index.html): ORM工具。本项目需要配合Mysql使用 
-    3. [Gin-Session](https://github.com/gin-contrib/sessions): Gin框架提供的Session操作工具
-    4. [Go-Redis](https://github.com/go-redis/redis): Golang Redis客户端
-    5. [Godotenv](https://github.com/joho/godotenv): 开发环境下的环境变量工具，方便使用环境变量
-    6. [Gin-Cors](https://github.com/gin-contrib/cors): Gin框架提供的跨域中间件
-    7. [Cron](https://github.com/robfig/cron): 定时任务管理模块
-    8. [Log](https://github.com/sirupsen/logrus) : 日志模块
-    9. [Excelize](https://github.com/360EntSecGroup-Skylar/excelize): 360公司写的处理excel的库,应该值得信赖 [中文文档](https://xuri.me/excelize/zh-hans/)
+1. [Gin](https://github.com/gin-gonic/gin): 轻量级Web框架，自称路由速度是golang最快的 
+2. [GORM](http://gorm.io/docs/index.html): ORM工具。本项目需要配合Mysql使用 
+3. [Gin-Session](https://github.com/gin-contrib/sessions): Gin框架提供的Session操作工具
+4. [Go-Redis](https://github.com/go-redis/redis): Golang Redis客户端
+5. [Godotenv](https://github.com/joho/godotenv): 开发环境下的环境变量工具，方便使用环境变量
+6. [Gin-Cors](https://github.com/gin-contrib/cors): Gin框架提供的跨域中间件
+7. [Cron](https://github.com/robfig/cron): 定时任务管理模块
+8. [Log](https://github.com/sirupsen/logrus) : 日志模块
+9. [Excelize](https://github.com/360EntSecGroup-Skylar/excelize): 360公司写的处理excel的库,应该值得信赖 [中文文档](https://xuri.me/excelize/zh-hans/)
 
 ## 项目结构
 
@@ -73,24 +73,19 @@ go-crud
 ## Godotenv
 
 项目在启动的时候依赖以下环境变量，但是在也可以在项目根目录创建.env文件设置环境变量便于使用(建议开发环境使用)
-    
+
 ```shell
-MYSQL_DSN="db_user:db_password@/db_name?charset=utf8&parseTime=True&loc=Local" # Mysql连接地址
-REDIS_ADDR="127.0.0.1:6379" # Redis端口和地址
-REDIS_PW="" # Redis连接密码
-REDIS_DB="" # Redis库从0到10
-SESSION_SECRE="" # Seesion密钥，必须设置而且不要泄露
-GIN_MODE="debug"
-```
-    
-```shell
-# window下不可以带双引号
+# window下使用时不可以带双引号
 MYSQL_DSN=db_user:db_password@/db_name?charset=utf8&parseTime=True&loc=Local # Mysql连接地址
 REDIS_ADDR=127.0.0.1:6379 # Redis端口和地址
 REDIS_PW= # Redis连接密码
 REDIS_DB= # Redis库从0到10
 SESSION_SECRE= # Seesion密钥，必须设置而且不要泄露
 GIN_MODE=debug
+UPLOADFILE=./upload/
+LogFilePath=./logs/
+LogFileName=my.log
+FilePath= ./upload/
 ```
 
 ## Go Mod
