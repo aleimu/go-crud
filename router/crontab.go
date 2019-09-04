@@ -9,7 +9,8 @@ import (
 func StartCron() {
 	c := cron.New()
 	//err := c.AddFunc("*/50 * * * * *", func() { fmt.Println("Every 50 Seconds Run Once!", time.Now()) })
-	err := c.AddFunc("* 50 * * * *", func() { fmt.Println("Every 5 Minutes Run Once!", time.Now()) })
+	//err := c.AddFunc("* 50 * * * *", func() { fmt.Println("Every 5 Minutes Run Once!", time.Now()) })
+	err := c.AddFunc("0 0 * * * *", func() { fmt.Println("Run once an hour!", time.Now()) })
 	if err != nil {
 		panic(err.Error())
 	}

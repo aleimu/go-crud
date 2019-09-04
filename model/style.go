@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -53,7 +54,12 @@ func GetStyleById(ID interface{}) (Style, error) {
 
 func GetStyleList(filter interface{}, skip int, limit int, sortKey string) ([]Style, error) {
 	var style []Style
-	result := DB.Where(filter).Offset(skip).Limit(limit).Order(sortKey).Find(&style)
+	var result *gorm.DB
+	if skip == 0 && limit == 0 {
+		result = DB.Where(filter).Find(&style)
+	} else {
+		result = DB.Where(filter).Offset(skip).Limit(limit).Order(sortKey).Find(&style)
+	}
 	fmt.Println("err:", result.Error, "result:", result)
 	return style, result.Error
 }

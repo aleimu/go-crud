@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"go-crud/conf"
 	"go-crud/model"
@@ -40,13 +39,6 @@ func ErrorResponse(err error) serializer.Response {
 				Msg:    fmt.Sprintf("%s%s", field, tag),
 				Error:  fmt.Sprint(err),
 			}
-		}
-	}
-	if _, ok := err.(*json.UnmarshalTypeError); ok {
-		return serializer.Response{
-			Status: 40001,
-			Msg:    "JSON类型不匹配",
-			Error:  fmt.Sprint(err),
 		}
 	}
 

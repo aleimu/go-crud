@@ -19,9 +19,9 @@ func NewApp() *gin.Engine {
 	r.MaxMultipartMemory = 8 << 20 // 8 MiBr
 
 	// 使用自定义中间件, 使用顺序需要注意
+	r.Use(middleware.Recovery())      // 处理各种异常,保障返回为json CatchExpection
 	r.Use(middleware.LoggerToFile())  // Logging to a file.
 	r.Use(middleware.BeforeRequest()) // flask.g
-	r.Use(middleware.Recovery())      // 处理各种异常,保障返回为json CatchExpection
 	r.Use(middleware.Session(os.Getenv("SESSION_SECRET")))
 	r.Use(middleware.Cors())
 	r.Use(middleware.CurrentUser())
@@ -61,6 +61,16 @@ func NewRouter() *gin.Engine {
 				logger.Println("Done! in path " + cCp.Request.URL.Path)
 			}()
 			c.JSON(http.StatusOK, gin.H{"user": gin.H{"a": gin.H{"b": "b",}, "Number": 123}, "Message": "hey", "Number": 123})
+		})
+		// 两个请求本质是两个goroutine,他们之间能相互传递信息吗? --- 单向可以,chan1请求发送后,chan2请求也发送了,chan1才会有返回;双向不行,类似于死锁
+		ch1 := make(chan string)
+		//ch2 := make(chan string)
+		v0.GET("/chan1", func(c *gin.Context) {
+			ch1 <- c.Query("ch")
+			c.JSON(http.StatusOK, gin.H{"hello": "world"})
+		})
+		v0.GET("/chan2", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"hello": <-ch1})
 		})
 	}
 
@@ -120,10 +130,10 @@ func NewRouter() *gin.Engine {
 		v2.GET("/styles", server.StyleList) //curl "127.0.0.1:3000/v1/styles?id=2"
 
 		// todo
-		v2.GET("/tasks", server.GetStyle)        // 任务列表
-		v2.GET("/tasks/:id", server.AddStyle)    // 任务详情
-		v2.PUT("/tasks", server.UpdateStyle)     // 派发任务
-		v2.DELETE("/tasks/:id", server.DelStyle) // 删除任务
+		v2.GET("/search", server.SearchStyle) // 获取广告列表
+		v2.GET("/show", server.AddStyle)      // 增加对应广告的展示量
+		v2.GET("/click", server.UpdateStyle)  // 增加广告的点击量
+
 	}
 	return r
 }
