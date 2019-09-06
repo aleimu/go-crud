@@ -3,6 +3,8 @@ package util
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
+	jsoniter "github.com/json-iterator/go"
 	"math/rand"
 	"net/smtp"
 	"strconv"
@@ -14,6 +16,8 @@ const (
 	OK  = 1000
 	ERR = 1500
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // RandStringRunes 返回随机字符串
 func RandStringRunes(n int) string {
@@ -34,6 +38,19 @@ func DateFormat(date time.Time, layout string) string {
 
 func Str2Int(str string) int {
 	tmp, err := strconv.Atoi(str)
+	if err == nil {
+		return tmp
+	}
+	panic("Str2Int err: " + err.Error())
+}
+
+func Int2Str(int int) string {
+	tmp := strconv.Itoa(int)
+	return tmp
+}
+
+func Str2Int64(str string) int64 {
+	tmp, err := strconv.ParseInt(str, 10, 64)
 	if err == nil {
 		return tmp
 	}
@@ -92,4 +109,48 @@ type errorInfo struct {
 
 func (e *errorString) Error() string {
 	return e.s
+}
+func Str2Map(jsonData string) (result map[string]interface{}) {
+	err := json.Unmarshal([]byte(jsonData), &result)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("str2Map err: " + err.Error())
+	}
+	return result
+}
+
+func Str2Slice(jsonData string) (result []interface{}) {
+	err := json.Unmarshal([]byte(jsonData), &result)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Str2Slice err: " + err.Error())
+	}
+	return result
+}
+
+func Map2Str(mapData interface{}) (result string) {
+	resultByte, err := json.Marshal(mapData)
+	result = string(resultByte)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("map2Str err: " + err.Error())
+	}
+	return result
+}
+
+func Byte2Map(jsonData []byte) (result map[string]interface{}) {
+	err := json.Unmarshal(jsonData, &result)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Byte2Map err: " + err.Error())
+	}
+	return result
+}
+func Map2Byte(mapData interface{}) (result []byte) {
+	resultByte, err := json.Marshal(mapData)
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("Map2Byte err: " + err.Error())
+	}
+	return resultByte
 }

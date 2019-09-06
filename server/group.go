@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+func GetGroups(c *gin.Context) {
+	group := model.FindGroups()
+	c.JSON(http.StatusOK, gin.H{"code": OK, "data": group})
+}
+
 func GetGroup(c *gin.Context) {
 	id := c.Query("id")
 	group, err := model.FindGroupById(id)

@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	jsoniter "github.com/json-iterator/go"
 	"go-crud/cache"
 	"go-crud/model"
 	. "go-crud/util"
@@ -11,9 +10,8 @@ import (
 	"time"
 )
 
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
-var onetime = 3600 * time.Second
-var aa = "[{\"ID\":2,\"CreatedAt\":\"2019-08-29T02:31:38Z\",\"UpdatedAt\":\"2019-08-29T02:31:38Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:31:38Z\",\"DownTime\":\"2019-08-29T02:31:38Z\"},{\"ID\":3,\"CreatedAt\":\"2019-08-29T02:31:39Z\",\"UpdatedAt\":\"2019-08-29T02:31:39Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:31:39Z\",\"DownTime\":\"2019-08-29T02:31:39Z\"},{\"ID\":4,\"CreatedAt\":\"2019-08-29T02:31:40Z\",\"UpdatedAt\":\"2019-08-29T02:31:40Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:31:40Z\",\"DownTime\":\"2019-08-29T02:31:40Z\"},{\"ID\":5,\"CreatedAt\":\"2019-08-29T02:31:41Z\",\"UpdatedAt\":\"2019-08-29T02:31:41Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:31:41Z\",\"DownTime\":\"2019-08-29T02:31:41Z\"},{\"ID\":6,\"CreatedAt\":\"2019-08-29T02:31:57Z\",\"UpdatedAt\":\"2019-08-29T02:31:57Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:31:57Z\",\"DownTime\":\"2019-08-29T02:31:57Z\"},{\"ID\":7,\"CreatedAt\":\"2019-08-29T02:32:18Z\",\"UpdatedAt\":\"2019-08-29T02:32:18Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:32:18Z\",\"DownTime\":\"2019-08-29T02:32:18Z\"},{\"ID\":8,\"CreatedAt\":\"2019-08-29T02:34:58Z\",\"UpdatedAt\":\"2019-08-29T02:34:58Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:34:58Z\",\"DownTime\":\"2019-08-29T02:34:58Z\"},{\"ID\":9,\"CreatedAt\":\"2019-08-29T02:43:08Z\",\"UpdatedAt\":\"2019-08-29T02:43:08Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:43:08Z\",\"DownTime\":\"2019-08-29T02:43:08Z\"},{\"ID\":10,\"CreatedAt\":\"2019-08-29T02:43:34Z\",\"UpdatedAt\":\"2019-08-29T02:43:34Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:43:34Z\",\"DownTime\":\"2019-08-29T02:43:34Z\"},{\"ID\":11,\"CreatedAt\":\"2019-08-29T02:43:54Z\",\"UpdatedAt\":\"2019-08-29T02:43:54Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:43:54Z\",\"DownTime\":\"2019-08-29T02:43:54Z\"},{\"ID\":12,\"CreatedAt\":\"2019-08-29T02:45:17Z\",\"UpdatedAt\":\"2019-08-29T02:45:17Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T02:45:17Z\",\"DownTime\":\"2019-08-29T02:45:17Z\"},{\"ID\":13,\"CreatedAt\":\"2019-08-29T03:22:01Z\",\"UpdatedAt\":\"2019-08-29T03:22:01Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T03:22:01Z\",\"DownTime\":\"2019-08-29T03:22:01Z\"},{\"ID\":14,\"CreatedAt\":\"2019-08-29T03:22:25Z\",\"UpdatedAt\":\"2019-08-29T03:22:25Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T03:22:25Z\",\"DownTime\":\"2019-08-29T03:22:25Z\"},{\"ID\":15,\"CreatedAt\":\"2019-08-29T03:23:39Z\",\"UpdatedAt\":\"2019-08-29T03:23:39Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T03:23:39Z\",\"DownTime\":\"2019-08-29T03:23:39Z\"},{\"ID\":16,\"CreatedAt\":\"2019-08-29T03:23:40Z\",\"UpdatedAt\":\"2019-08-29T03:23:40Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T03:23:40Z\",\"DownTime\":\"2019-08-29T03:23:40Z\"},{\"ID\":17,\"CreatedAt\":\"2019-08-29T03:25:00Z\",\"UpdatedAt\":\"2019-08-29T03:25:00Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T03:25:00Z\",\"DownTime\":\"2019-08-29T03:25:00Z\"},{\"ID\":18,\"CreatedAt\":\"2019-08-29T03:39:54Z\",\"UpdatedAt\":\"2019-08-29T03:39:54Z\",\"group_id;index\":2,\"image_id\":2,\"ImageUrl\":\"www\",\"ImageName\":\"qqqq\",\"Url\":\"qqwqw\",\"OperId\":123,\"OperName\":\"321\",\"Status\":1,\"Close\":1,\"Mode\":1,\"Frequency\":\"2\",\"Position\":1,\"System\":1,\"Note\":\"\",\"UpTime\":\"2019-08-29T03:39:54Z\",\"DownTime\":\"2019-08-29T03:39:54Z\"}]"
+var onehour = 3600 * time.Second
+var oneday = time.Hour * 24
 
 func GetStyle(c *gin.Context) {
 	id := c.Query("id")
@@ -130,7 +128,7 @@ func GetFreshStyle(group_id interface{}) []model.Style {
 
 func AsyncRedis(groupName string, data interface{}) {
 	// 按分组group同步修改缓存中的信息
-	_, err := cache.RedisClient.Set(groupName, data, onetime).Result()
+	_, err := cache.RedisClient.Set(groupName, data, oneday).Result()
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("AsyncRedis err: " + err.Error())
@@ -143,47 +141,148 @@ func FreshRedis(group_id interface{}) {
 	AsyncRedis(groupName, Map2Str(styles))
 }
 
-func Str2Map(jsonData string) (result map[string]interface{}) {
-	err := json.Unmarshal([]byte(jsonData), &result)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("str2Map err: " + err.Error())
+func FreshAllRedis(c *gin.Context) {
+	// 分别刷新每个分组的广告到缓存中
+	groups := model.FindGroups()
+	for i, v := range groups {
+		fmt.Println("i:", i, v)
+		FreshRedis(v.ID)
+		InitDay(Int2Str(v.ID))
 	}
-	return result
+	CtrCronJob()
+	c.JSON(http.StatusOK, gin.H{"code": OK, "source": "rds", "data": nil})
 }
 
-func Str2Slice(jsonData string) (result []interface{}) {
-	err := json.Unmarshal([]byte(jsonData), &result)
+func CtrCronJob() {
+	// 遍历当前所有上线的广告,并统计缓存中的数据
+	data := make(map[string]interface{})
+	data["status"] = 1
+	styles, err := model.GetStyleList(data, 0, 0, " id desc")
 	if err != nil {
 		fmt.Println(err.Error())
-		panic("Str2Slice err: " + err.Error())
+		panic("GetFreshStyle err: " + err.Error())
 	}
-	return result
+	for k, v := range styles {
+		fmt.Println("k:", k)
+		fmt.Println("v:", v)
+		StackDay(Int2Str(v.ID))
+	}
 }
 
-func Map2Str(mapData interface{}) (result string) {
-	resultByte, err := json.Marshal(mapData)
-	result = string(resultByte)
+var DayShowVlue = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+var DayClickVlue = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+var DayShowKey = "day:show:key:"
+var DayClickKey = "day:click:key:"
+var HourShowKey = "hour:show:key:"
+var HourClickKey = "hour:click:key:"
+
+func InitDay(id string) {
+	// 初始化一天的每小时
+	_, err := cache.RedisClient.RPush(DayShowKey+id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0).Result()
 	if err != nil {
 		fmt.Println(err.Error())
-		panic("map2Str err: " + err.Error())
+		panic("DayShowKey err: " + err.Error())
 	}
-	return result
+	_, err = cache.RedisClient.RPush(DayClickKey+id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0).Result()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("DayClickKey err: " + err.Error())
+	}
+	StackDay(id)
 }
 
-func Byte2Map(jsonData []byte) (result map[string]interface{}) {
-	err := json.Unmarshal(jsonData, &result)
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("Byte2Map err: " + err.Error())
-	}
-	return result
+func StackDay(id string) {
+	// 将hour:show:key:X 的值依据当前小时移入day:click:key:X
+	scount := GetHourShow(id)
+	ccount := GetHourClick(id)
+	fmt.Println("scount:", scount, "ccount:", ccount)
+	SetHourShow(id, scount)
+	SetHourClick(id, ccount)
+	CleanHour(id)
 }
-func Map2Byte(mapData interface{}) (result []byte) {
-	resultByte, err := json.Marshal(mapData)
+
+func CleanHour(id string) {
+	// 清理小时计数
+	_, err := cache.RedisClient.Set(HourShowKey+id, 0, oneday).Result()
 	if err != nil {
 		fmt.Println(err.Error())
-		panic("Map2Byte err: " + err.Error())
+		panic("AddHourClick err: " + err.Error())
 	}
-	return resultByte
+	_, err = cache.RedisClient.Set(HourClickKey+id, 0, oneday).Result()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("AddHourClick err: " + err.Error())
+	}
+}
+
+func SetHourShow(id, count string) {
+	// 设置某广告的某小时的曝光量
+	hourNow := int64(time.Now().Hour())
+	_, err := cache.RedisClient.LSet(DayShowKey+id, hourNow, count).Result()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("SetHourShow err: " + err.Error())
+	}
+}
+
+func SetHourClick(id, count string) {
+	// 设置某广告的某小时的点击量
+	hourNow := int64(time.Now().Hour())
+	_, err := cache.RedisClient.RPush(DayClickKey+id, hourNow, count).Result()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("SetHourClick err: " + err.Error())
+	}
+}
+
+func AddHourShow(c *gin.Context) {
+	// 增加曝光量
+	count := c.DefaultQuery("count", "1")
+	id := c.DefaultQuery("id", "1")
+	_, err := cache.RedisClient.IncrBy(HourShowKey+id, Str2Int64(count)).Result()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("AddHourShow err: " + err.Error())
+	}
+	//c.JSON(http.StatusOK, gin.H{"code": OK, "source": "rds", "data": nil}) // 不返回也没关系,看情况吧
+}
+
+func AddHourClick(c *gin.Context) {
+	// 增加点击量
+	count := c.DefaultQuery("count", "1")
+	id := c.DefaultQuery("id", "1")
+	_, err := cache.RedisClient.IncrBy(HourClickKey+id, Str2Int64(count)).Result()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("AddHourClick err: " + err.Error())
+	}
+	//c.JSON(http.StatusOK, gin.H{"code": OK, "source": "rds", "data": nil})
+}
+
+func GetHourShow(id string) string {
+	// 获取曝光量
+	count, err := cache.RedisClient.Get(HourShowKey + id).Result()
+	if err == cache.RedisNil {
+		fmt.Println(HourShowKey + id + " does not exist")
+	} else if err != nil {
+		fmt.Println("GetHourShow err: " + err.Error())
+		panic("GetHourShow err: " + err.Error())
+	} else {
+		fmt.Println("count:", count)
+	}
+	return count
+}
+
+func GetHourClick(id string) string {
+	// 获取点击量
+	count, err := cache.RedisClient.Get(HourClickKey + id).Result()
+	if err == cache.RedisNil {
+		fmt.Println(HourClickKey + id + " does not exist")
+	} else if err != nil {
+		fmt.Println("GetHourClick err: " + err.Error())
+		panic("GetHourClick err: " + err.Error())
+	} else {
+		fmt.Println("count:", count)
+	}
+	return count
 }

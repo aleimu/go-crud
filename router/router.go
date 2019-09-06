@@ -110,6 +110,8 @@ func NewRouter() *gin.Engine {
 			c.File(conf.FilePath + filename)
 		})
 		// 查询分组详情
+		v2.GET("/groups", server.GetGroups) // curl "127.0.0.1:3000/v1/group?id=2"
+		// 查询分组详情
 		v2.GET("/group", server.GetGroup) // curl "127.0.0.1:3000/v1/group?id=2"
 		// 新增分组
 		v2.POST("/group", server.AddGroup) // curl -X POST "127.0.0.1:3000/v1/group" -d"name=aaa"
@@ -130,9 +132,10 @@ func NewRouter() *gin.Engine {
 		v2.GET("/styles", server.StyleList) //curl "127.0.0.1:3000/v1/styles?id=2"
 
 		// todo
-		v2.GET("/search", server.SearchStyle) // 获取广告列表
-		v2.GET("/show", server.AddStyle)      // 增加对应广告的展示量
-		v2.GET("/click", server.UpdateStyle)  // 增加广告的点击量
+		v2.GET("/freshall", server.FreshAllRedis) // 获取广告列表
+		v2.GET("/search", server.SearchStyle)     // 获取广告列表
+		v2.GET("/show", server.AddHourShow)       // 增加对应广告的展示量
+		v2.GET("/click", server.AddHourClick)     // 增加广告的点击量
 
 	}
 	return r
