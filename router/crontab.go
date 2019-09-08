@@ -21,14 +21,11 @@ func CtrHourJob() {
 	// 每小时执行一次的点击量/曝光量统计任务
 	now := time.Now().Hour()
 	if now < 1 { // 当天零点,结算上一天的数据,初始化今天的数据结构
-		StorageDb()
+		server.StorageDb()
 	}
 	server.CtrCronJob()
 }
 
-func StorageDb() {
-	// 入库
-}
 
 /* 也可以参考cron的自测用例学习如何使用
 Entry                  | Description                                | Equivalent To
