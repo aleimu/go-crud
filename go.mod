@@ -13,10 +13,12 @@ require (
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/securecookie v1.1.2-0.20180608144417-78f3d318a8bf
 	github.com/gorilla/sessions v1.1.1
+	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/jinzhu/gorm v1.9.2-0.20180818231433-32455088f24d
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a
 	github.com/joho/godotenv v1.2.1-0.20180405053634-1709ab122c98
 	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/ugorji/go v1.1.2-0.20180918125716-ed9a3b5f078b
 	gopkg.in/go-playground/validator.v8 v8.18.2
 	gopkg.in/yaml.v2 v2.2.1

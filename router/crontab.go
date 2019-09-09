@@ -10,7 +10,8 @@ func StartCron() {
 	c := cron.New()
 	//err := c.AddFunc("*/50 * * * * *", func() { fmt.Println("Every 50 Seconds Run Once!", time.Now()) })
 	//err := c.AddFunc("* 50 * * * *", func() { fmt.Println("Every 5 Minutes Run Once!", time.Now()) })
-	err := c.AddFunc("0 0 * * * *", CtrHourJob)
+	//err := c.AddFunc("0 0 * * * *", CtrHourJob)
+	err := c.AddFunc("0 * * * * *", CtrHourJob)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -23,9 +24,9 @@ func CtrHourJob() {
 	if now < 1 { // 当天零点,结算上一天的数据,初始化今天的数据结构
 		server.StorageDb()
 	}
-	server.CtrCronJob()
+	server.StorageDb()
+	//server.CtrCronJob()
 }
-
 
 /* 也可以参考cron的自测用例学习如何使用
 Entry                  | Description                                | Equivalent To

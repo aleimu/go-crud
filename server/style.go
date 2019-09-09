@@ -10,9 +10,6 @@ import (
 	"time"
 )
 
-var onehour = 3600 * time.Second
-var oneday = time.Hour * 24
-
 func GetStyle(c *gin.Context) {
 	id := c.Query("id")
 	style, err := model.GetStyleById(id)
@@ -128,7 +125,7 @@ func GetFreshStyle(group_id interface{}) []model.Style {
 
 func AsyncRedis(groupName string, data interface{}) {
 	// 按分组group同步修改缓存中的信息
-	_, err := cache.RedisClient.Set(groupName, data, oneday).Result()
+	_, err := cache.RedisClient.Set(groupName, data, OneDay).Result()
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("AsyncRedis err: " + err.Error())
@@ -169,21 +166,14 @@ func CtrCronJob() {
 	}
 }
 
-var DayShowVlue = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
-var DayClickVlue = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
-var DayShowKey = "day:show:key:"
-var DayClickKey = "day:click:key:"
-var HourShowKey = "hour:show:key:"
-var HourClickKey = "hour:click:key:"
-
 func InitDay(id string) {
 	// 初始化一天的每小时
-	_, err := cache.RedisClient.RPush(DayShowKey+id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0).Result()
+	_, err := cache.RedisClient.RPush(DayShowKey+id, DayValueStrList).Result()
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("DayShowKey err: " + err.Error())
 	}
-	_, err = cache.RedisClient.RPush(DayClickKey+id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0).Result()
+	_, err = cache.RedisClient.RPush(DayClickKey+id, DayValueStrList).Result()
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("DayClickKey err: " + err.Error())
@@ -203,12 +193,12 @@ func StackDay(id string) {
 
 func CleanHour(id string) {
 	// 清理小时计数
-	_, err := cache.RedisClient.Set(HourShowKey+id, 0, oneday).Result()
+	_, err := cache.RedisClient.Set(HourShowKey+id, 0, OneDay).Result()
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("AddHourClick err: " + err.Error())
 	}
-	_, err = cache.RedisClient.Set(HourClickKey+id, 0, oneday).Result()
+	_, err = cache.RedisClient.Set(HourClickKey+id, 0, OneDay).Result()
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("AddHourClick err: " + err.Error())
@@ -262,8 +252,10 @@ func AddHourClick(c *gin.Context) {
 func GetHourShow(id string) string {
 	// 获取曝光量
 	count, err := cache.RedisClient.Get(HourShowKey + id).Result()
+	fmt.Println("GetHourShow:", count, err)
 	if err == cache.RedisNil {
 		fmt.Println(HourShowKey + id + " does not exist")
+		return "0"
 	} else if err != nil {
 		fmt.Println("GetHourShow err: " + err.Error())
 		panic("GetHourShow err: " + err.Error())
@@ -276,11 +268,45 @@ func GetHourShow(id string) string {
 func GetHourClick(id string) string {
 	// 获取点击量
 	count, err := cache.RedisClient.Get(HourClickKey + id).Result()
+	fmt.Println("GetHourClick:", count)
 	if err == cache.RedisNil {
 		fmt.Println(HourClickKey + id + " does not exist")
+		return "0"
 	} else if err != nil {
 		fmt.Println("GetHourClick err: " + err.Error())
 		panic("GetHourClick err: " + err.Error())
+	} else {
+		fmt.Println("count:", count)
+	}
+	return count
+}
+
+func GetDayShow(id string) []string {
+	// 获取曝光量
+	count, err := cache.RedisClient.LRange(DayShowKey+id, 0, 23).Result()
+	fmt.Println("GetDayShow:", count)
+	if err == cache.RedisNil {
+		fmt.Println(DayShowKey + id + " does not exist")
+		return DayValueStrList
+	} else if err != nil {
+		fmt.Println("GetDayShow err: " + err.Error())
+		panic("GetDayShow err: " + err.Error())
+	} else {
+		fmt.Println("count:", count)
+	}
+	return count
+}
+
+func GetDayClick(id string) []string {
+	// 获取点击量
+	count, err := cache.RedisClient.LRange(DayClickKey+id, 0, 23).Result()
+	fmt.Println("GetDayClick:", count)
+	if err == cache.RedisNil {
+		fmt.Println(DayClickKey + id + " does not exist")
+		return DayValueStrList
+	} else if err != nil {
+		fmt.Println("GetDayClick err: " + err.Error())
+		panic("GetDayClick err: " + err.Error())
 	} else {
 		fmt.Println("count:", count)
 	}
