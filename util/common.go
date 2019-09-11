@@ -133,6 +133,14 @@ func Md5(source string) string {
 	return hex.EncodeToString(md5h.Sum(nil))
 }
 
+func Truncate(s string, n int) string {
+	runes := []rune(s)
+	if len(runes) > n {
+		return string(runes[:n])
+	}
+	return s
+}
+
 func GetCurrentTime() time.Time {
 	loc, _ := time.LoadLocation("Asia/Shanghai")
 	return time.Now().In(loc)
@@ -211,4 +219,13 @@ func Map2Byte(mapData interface{}) (result []byte) {
 		panic("Map2Byte err: " + err.Error())
 	}
 	return resultByte
+}
+
+func byte2str(a []byte) []string {
+	b := []string{}
+	for _, v := range a {
+		b = append(b, string(v))
+	}
+	fmt.Println(a, "-----------", b)
+	return b
 }

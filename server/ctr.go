@@ -21,7 +21,7 @@ func RangeCtr() {
 	styles, err := model.GetStyleList(data, 0, 0, " id desc")
 	if err != nil {
 		fmt.Println(err.Error())
-		panic("GetFreshStyle err: " + err.Error())
+		panic("GetSystemStyle err: " + err.Error())
 	}
 	for k, v := range styles {
 		fmt.Println("k:", k)

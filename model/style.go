@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"time"
@@ -21,7 +22,7 @@ type Style struct {
 	Mode      int    `gorm:"default:1"` // 图片展示方式: 1:轮播,2:横幅
 	Frequency string `gorm:"default:2"` // 图片轮播的频率0.1-5s
 	Position  int    `gorm:"default:1"` // 图片摆放位置: 1:首页banner,2:首页底部
-	System    int    `gorm:"default:1"` // 1: driver_advert, 2:dispatch_advert, 3:order_advert, 4: camel_advert
+	System    int    `gorm:"default:1"` // 1: 系统1, 2:系统2, 3:系统3, 4: 系统4
 	Note      string                    // 备注-历次上下架的时间记录
 	UpTime    time.Time                 // 上架时间
 	DownTime  time.Time                 // 下架时间
@@ -41,7 +42,7 @@ type StyleForm struct {
 	//Mode      int    `form:"default:1"` // 图片展示方式: 1:轮播,2:横幅
 	//Frequency string `form:"default:2"` // 图片轮播的频率0.1-5s
 	//Position  int    `form:"default:1"` // 图片摆放位置: 1:首页banner,2:首页底部
-	//System    int    `form:"default:1"` // 1: driver_advert, 2:dispatch_advert, 3:order_advert, 4: camel_advert
+	//System    int    `form:"default:1"` // 1: 系统1, 2:系统2, 3:系统3, 4: 系统4
 	//Note      string                    // 备注-历次上下架的时间记录
 }
 
@@ -79,4 +80,54 @@ func AddNewStyle(sf StyleForm) error {
 		Url: sf.Url, OperId: sf.OperId, OperName: sf.OperName, UpTime: time.Now(), DownTime: time.Now()})
 	return result.Error
 
+}
+
+func GetSystems2() []string {
+	var tmp []byte
+	var s []string
+	rows, err := DB.Model(&Style{}).Select("distinct(system)").Rows()
+	if err != nil {
+		panic(err.Error)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&tmp)
+		s = append(s, string(tmp))
+	}
+	fmt.Println("tmp:", tmp, rows, err, s)
+	return s
+}
+
+func GetSystems() []string {
+	var tmp []byte
+	var s []string
+	//rows, err := DB.Model(&Style{}).Select("distinct(system)").Rows()
+	rows, err := DB.Model(&Style{}).Select("system,image_name,created_at").Rows()
+	fmt.Println("eerrr1:", rows, err)
+	if err != nil {
+		panic(err.Error)
+	}
+	defer rows.Close()
+	ss, err := List(rows, tmp)
+
+	fmt.Println("tmp:", tmp, rows, err, s, ss)
+	return s
+}
+
+// 通用的解析rows返回的函数
+func List(rows *sql.Rows, unit interface{}) (units []interface{}, err error) {
+	for rows.Next() {
+		err = DB.ScanRows(rows, &unit)
+		if err != nil {
+			fmt.Println("eerrr2:", rows, err.Error())
+			panic(err.Error)
+		}
+		err = rows.Scan(&unit)
+		if err != nil {
+			fmt.Println("eerrr3:", rows, err.Error())
+			panic(err.Error)
+		}
+		units = append(units, &unit)
+	}
+	return
 }

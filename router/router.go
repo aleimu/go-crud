@@ -136,6 +136,7 @@ func NewRouter() *gin.Engine {
 		v2.GET("/search", server.SearchStyle)     // 获取广告列表
 		v2.GET("/show", server.AddHourShow)       // 增加对应广告的展示量
 		v2.GET("/click", server.AddHourClick)     // 增加广告的点击量
+		v2.GET("/system", server.GetSystems)      // 获取系统编号
 
 	}
 	return r

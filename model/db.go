@@ -15,7 +15,7 @@ var DB *gorm.DB
 func Database(connString string, flag bool) {
 	println("mysql:", connString)
 	db, err := gorm.Open("mysql", connString)
-	db.LogMode(true)
+	db.LogMode(true)	// 启用Logger，显示详细日志
 	// Error
 	if err != nil {
 		panic(err)
