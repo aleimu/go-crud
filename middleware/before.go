@@ -24,7 +24,7 @@ func Recovery() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"code": util.ERR, "msg": "server err awsl!", "data": "内部错误"})
+				c.JSON(http.StatusInternalServerError, gin.H{"code": util.ERR, "msg": "server err awsl!", "data": fmt.Sprintf("内部错误:%s", err)})
 			}
 		}()
 		c.Next()

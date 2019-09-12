@@ -48,7 +48,7 @@ func StyleList(c *gin.Context) {
 }
 
 func AddStyle(c *gin.Context) {
-	var sql model.StyleForm
+	var sql model.Style
 	err := c.ShouldBind(&sql) // form 必须这样绑定,json 也可以用这个方式校验,看源码可以看出是依据c.Request.Method, c.ContentType()推断出合适的类型
 	// err := c.ShouldBindJSON(&newImage)	// 只有json可以
 	if err != nil {
@@ -62,26 +62,26 @@ func AddStyle(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": OK, "msg": "add success!"})
-	go FreshRedis(sql.Id) // 同步下
+	go FreshRedis(sql.ID) // 同步下
 
 }
 
 func UpdateStyle(c *gin.Context) {
-	var sql model.StyleForm
+	var sql model.Style
 	var ok int64 = 1
 	err := c.ShouldBind(sql)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 	fmt.Sprintln("sql", sql)
-	result := model.DB.Model(&model.Style{}).Where("id = ?", sql.Id).Updates(&model.Style{ImageName: sql.ImageName, Url: sql.Url, GroupId: sql.GroupId, Status: sql.Status}) // model式批量更新
+	result := model.DB.Model(&model.Style{}).Where("id = ?", sql.ID).Updates(&model.Style{ImageName: sql.ImageName, Url: sql.Url, GroupId: sql.GroupId, Status: sql.Status}) // model式批量更新
 	fmt.Println("result:", result, result.Error, result.RowsAffected)
 	if result.RowsAffected != ok || result.Error != nil {
 		c.JSON(http.StatusOK, gin.H{"code": ERR, "data": "update style err!"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": OK, "data": sql})
-	go FreshRedis(sql.Id) // 同步下
+	go FreshRedis(sql.ID) // 同步下
 }
 
 func DelStyle(c *gin.Context) {
@@ -111,7 +111,7 @@ func SearchStyle(c *gin.Context) {
 }
 
 func GetSystems(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"code": OK, "data": model.GetSystems()})
+	c.JSON(http.StatusOK, gin.H{"code": OK, "data": model.GetSystems3()})
 }
 
 /*

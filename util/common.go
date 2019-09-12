@@ -2,11 +2,11 @@ package util
 
 import (
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	jsoniter "github.com/json-iterator/go"
 	"math/rand"
-	"net/smtp"
 	"strconv"
 	"strings"
 	"time"
@@ -133,6 +133,27 @@ func Md5(source string) string {
 	return hex.EncodeToString(md5h.Sum(nil))
 }
 
+//base64加密
+//例如:str := utils.Base64Encode([]byte("Hello, playground"))
+func Base64Encode(src []byte) string {
+	return base64.StdEncoding.EncodeToString(src)
+}
+
+//base64解密
+func Base64Decode(src string) string {
+	code, err := base64.StdEncoding.DecodeString(src)
+	if err != nil {
+		fmt.Println("Base64解码失败!" + err.Error())
+	}
+	return string(code)
+}
+
+//生成随机数字
+func RandomInt(min int, max int) int {
+	rand.Seed(time.Now().UTC().UnixNano())
+	return min + rand.Intn(max-min)
+}
+
 func Truncate(s string, n int) string {
 	runes := []rune(s)
 	if len(runes) > n {
@@ -146,36 +167,6 @@ func GetCurrentTime() time.Time {
 	return time.Now().In(loc)
 }
 
-func SendToMail(user, password, host, to, subject, body, mailtype string) error {
-	hp := strings.Split(host, ":")
-	auth := smtp.PlainAuth("", user, password, hp[0])
-	var content_type string
-	if mailtype == "html" {
-		content_type = "Content-Type: text/" + mailtype + "; charset=UTF-8"
-	} else {
-		content_type = "Content-Type: text/plain" + "; charset=UTF-8"
-	}
-	msg := []byte("To: " + to + "\r\nFrom: " + user + "\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
-	send_to := strings.Split(to, ";")
-	return smtp.SendMail(host, auth, user, send_to, msg)
-}
-
-type errorString struct {
-	s string
-}
-
-type errorInfo struct {
-	Time     string `json:"time"`
-	Alarm    string `json:"alarm"`
-	Message  string `json:"message"`
-	Filename string `json:"filename"`
-	Line     int    `json:"line"`
-	Funcname string `json:"funcname"`
-}
-
-func (e *errorString) Error() string {
-	return e.s
-}
 func Str2Map(jsonData string) (result map[string]interface{}) {
 	err := json.Unmarshal([]byte(jsonData), &result)
 	if err != nil {
@@ -221,7 +212,7 @@ func Map2Byte(mapData interface{}) (result []byte) {
 	return resultByte
 }
 
-func byte2str(a []byte) []string {
+func Byte2Str(a []byte) []string {
 	b := []string{}
 	for _, v := range a {
 		b = append(b, string(v))
