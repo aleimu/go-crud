@@ -133,10 +133,10 @@ func NewRouter() *gin.Engine {
 
 		// todo
 		v2.GET("/freshall", server.FreshAllRedis) // 获取广告列表
-		v2.GET("/search", server.SearchStyle)     // 获取广告列表
-		v2.GET("/show", server.AddHourShow)       // 增加对应广告的展示量
-		v2.GET("/click", server.AddHourClick)     // 增加广告的点击量
-		v2.GET("/system", server.GetSystems)      // 获取系统编号
+		v2.GET("/search", server.SearchStyle)     // 获取广告列表 curl "127.0.0.1:3000/v1/search"
+		v2.GET("/show", server.AddHourShow)       // 增加对应广告的展示量 curl "127.0.0.1:3000/v1/show?id=2&count=10"
+		v2.GET("/click", server.AddHourClick)     // 增加广告的点击量 curl "127.0.0.1:3000/v1/click?id=2&count=10"
+		v2.GET("/system", server.GetSystems)      // 获取系统编号 curl "127.0.0.1:3000/v1/system"
 
 	}
 	return r

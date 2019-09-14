@@ -21,28 +21,28 @@ func GetStyle(c *gin.Context) {
 }
 
 func StyleList(c *gin.Context) {
-	//var data map[string]interface{}
-	data := make(map[string]interface{})
+	//var filter map[string]interface{}
+	filter := make(map[string]interface{})
 	id := c.Query("id")
 	status := c.Query("status")
 	system := c.Query("system")
 	fmt.Println("Query:", id, status, system)
 	if id != "" {
-		data["id"] = id
+		filter["id"] = id
 	}
 	if status != "" {
-		data["status"] = status
+		filter["status"] = status
 	}
 	if system != "" {
-		data["system"] = system
+		filter["system"] = system
 	}
-	fmt.Println("data:", data)
-	style, err := model.GetStyleList(data, 0, 10, " id desc")
-	count := model.GetStyleTotal(data)
+	fmt.Println("filter:", filter)
+	style, err := model.GetStyleList(filter, 0, 10, " id desc")
+	count := model.GetStyleTotal(filter)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": ERR, "msg": err})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"code": OK, "data": style, "count": count})
+		c.JSON(http.StatusOK, gin.H{"code": OK, "filter": style, "count": count})
 	}
 
 }

@@ -220,3 +220,14 @@ func Byte2Str(a []byte) []string {
 	fmt.Println(a, "-----------", b)
 	return b
 }
+
+func StrSumStr(s1, s2 string) string {
+	tmp1, err := strconv.Atoi(s1)
+	tmp2, err := strconv.Atoi(s2)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	tm3 := strconv.Itoa(tmp1 + tmp2)
+
+	return tm3
+}
