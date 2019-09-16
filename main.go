@@ -12,6 +12,5 @@ func main() {
 	router.StartCron()
 	// 装载路由
 	r := router.NewRouter()
-
-	r.Run(":3001")
+	r.Run(":3000")
 }

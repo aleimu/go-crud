@@ -35,6 +35,16 @@ func GetCtr(filter interface{}) (Ctr, error) {
 	return ctr, result.Error
 }
 
+func GetCtrs(filter interface{}) *[]Ctr {
+	var ctr []Ctr
+	result := DB.Where(filter).Find(&ctr)
+	fmt.Println("err:", result.Error, "result:", result)
+	if result.Error != nil {
+		panic(result.Error)
+	}
+	return &ctr
+}
+
 func UpdateCtr(c Ctr) error {
 	result := DB.Model(&Ctr{}).Where("style_id = ?", c.StyleId).
 		Updates(&Ctr{Show: c.Show, Click: c.Click, ShowDay: c.ShowDay, ClickDay: c.ClickDay,

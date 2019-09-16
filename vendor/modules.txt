@@ -1,3 +1,5 @@
+# github.com/360EntSecGroup-Skylar/excelize v1.4.1
+github.com/360EntSecGroup-Skylar/excelize
 # github.com/Chronokeeper/anyxml v0.0.0-20160530174208-54457d8e98c6
 github.com/Chronokeeper/anyxml
 # github.com/CloudyKit/fastprinter v0.0.0-20170127035650-74b38d55f37a
@@ -62,6 +64,8 @@ github.com/mattn/go-isatty
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v1.0.1
 github.com/modern-go/reflect2
+# github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826
+github.com/mohae/deepcopy
 # github.com/robfig/cron v1.2.0
 github.com/robfig/cron
 # github.com/sirupsen/logrus v1.4.2
