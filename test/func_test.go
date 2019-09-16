@@ -30,6 +30,15 @@ func test() {
 	fmt.Println(string(312))
 }
 
+func test_float() {
+	var a = 123;
+	var b = 345;
+	fmt.Println("--------------------------------------")
+	fmt.Println("%0.2f:", (float32(a) / float32(b)))
+	fmt.Println("--------------------------------------")
+
+}
+
 /* 查询的姿势1
 func ListMaxCommentPost() (posts []*Post, err error) {
 	var (
@@ -47,8 +56,4 @@ func ListMaxCommentPost() (posts []*Post, err error) {
 	}
 	return
 }
- */
-
-
-
-
+*/

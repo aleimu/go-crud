@@ -2,7 +2,7 @@ package router
 
 import (
 	"fmt"
-	"github.com/cron"
+	"github.com/robfig/cron"
 	"go-crud/server"
 	"time"
 )

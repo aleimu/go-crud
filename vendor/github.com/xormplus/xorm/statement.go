@@ -6,8 +6,6 @@ package xorm
 
 import (
 	"database/sql/driver"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -148,8 +146,22 @@ func (statement *Statement) Where(query interface{}, args ...interface{}) *State
 func (statement *Statement) And(query interface{}, args ...interface{}) *Statement {
 	switch query.(type) {
 	case string:
-		cond := builder.Expr(query.(string), args...)
-		statement.cond = statement.cond.And(cond)
+		isExpr := false
+		var cargs []interface{}
+		for i, _ := range args {
+			if _, ok := args[i].(sqlExpr); ok {
+				isExpr = true
+			}
+			cargs = append(cargs, args[i])
+		}
+		if isExpr {
+			sqlStr, _ := ConvertToBoundSQL(query.(string), cargs)
+			cond := builder.Expr(sqlStr)
+			statement.cond = statement.cond.And(cond)
+		} else {
+			cond := builder.Expr(query.(string), args...)
+			statement.cond = statement.cond.And(cond)
+		}
 	case map[string]interface{}:
 		cond := builder.Eq(query.(map[string]interface{}))
 		statement.cond = statement.cond.And(cond)
@@ -172,8 +184,22 @@ func (statement *Statement) And(query interface{}, args ...interface{}) *Stateme
 func (statement *Statement) Or(query interface{}, args ...interface{}) *Statement {
 	switch query.(type) {
 	case string:
-		cond := builder.Expr(query.(string), args...)
-		statement.cond = statement.cond.Or(cond)
+		isExpr := false
+		var cargs []interface{}
+		for i, _ := range args {
+			if _, ok := args[i].(sqlExpr); ok {
+				isExpr = true
+			}
+			cargs = append(cargs, args[i])
+		}
+		if isExpr {
+			sqlStr, _ := ConvertToBoundSQL(query.(string), cargs)
+			cond := builder.Expr(sqlStr)
+			statement.cond = statement.cond.Or(cond)
+		} else {
+			cond := builder.Expr(query.(string), args...)
+			statement.cond = statement.cond.Or(cond)
+		}
 	case map[string]interface{}:
 		cond := builder.Eq(query.(map[string]interface{}))
 		statement.cond = statement.cond.Or(cond)
@@ -399,7 +425,7 @@ func (statement *Statement) buildUpdates(bean interface{},
 								continue
 							}
 						} else {
-							//TODO: how to handler?
+							// TODO: how to handler?
 							panic("not supported")
 						}
 					} else {
@@ -408,7 +434,7 @@ func (statement *Statement) buildUpdates(bean interface{},
 				} else {
 					// Blank struct could not be as update data
 					if requiredField || !isStructZero(fieldValue) {
-						bytes, err := json.Marshal(fieldValue.Interface())
+						bytes, err := DefaultJSONHandler.Marshal(fieldValue.Interface())
 						if err != nil {
 							panic(fmt.Sprintf("mashal %v failed", fieldValue.Interface()))
 						}
@@ -437,7 +463,7 @@ func (statement *Statement) buildUpdates(bean interface{},
 			}
 
 			if col.SQLType.IsText() {
-				bytes, err := json.Marshal(fieldValue.Interface())
+				bytes, err := DefaultJSONHandler.Marshal(fieldValue.Interface())
 				if err != nil {
 					engine.logger.Error(err)
 					continue
@@ -457,7 +483,7 @@ func (statement *Statement) buildUpdates(bean interface{},
 					fieldType.Elem().Kind() == reflect.Uint8 {
 					val = fieldValue.Slice(0, 0).Interface()
 				} else {
-					bytes, err = json.Marshal(fieldValue.Interface())
+					bytes, err = DefaultJSONHandler.Marshal(fieldValue.Interface())
 					if err != nil {
 						engine.logger.Error(err)
 						continue
@@ -580,21 +606,9 @@ func (statement *Statement) getExpr() map[string]exprParam {
 
 func (statement *Statement) col2NewColsWithQuote(columns ...string) []string {
 	newColumns := make([]string, 0)
+	quotes := append(strings.Split(statement.Engine.Quote(""), ""), "`")
 	for _, col := range columns {
-		col = strings.Replace(col, "`", "", -1)
-		col = strings.Replace(col, statement.Engine.QuoteStr(), "", -1)
-		ccols := strings.Split(col, ",")
-		for _, c := range ccols {
-			fields := strings.Split(strings.TrimSpace(c), ".")
-			if len(fields) == 1 {
-				newColumns = append(newColumns, statement.Engine.quote(fields[0]))
-			} else if len(fields) == 2 {
-				newColumns = append(newColumns, statement.Engine.quote(fields[0])+"."+
-					statement.Engine.quote(fields[1]))
-			} else {
-				panic(errors.New("unwanted colnames"))
-			}
-		}
+		newColumns = append(newColumns, statement.Engine.Quote(eraseAny(col, quotes...)))
 	}
 	return newColumns
 }
@@ -765,7 +779,9 @@ func (statement *Statement) Join(joinOP string, tablename interface{}, condition
 			return statement
 		}
 		tbs := strings.Split(tp.TableName(), ".")
-		var aliasName = strings.Trim(tbs[len(tbs)-1], statement.Engine.QuoteStr())
+		quotes := append(strings.Split(statement.Engine.Quote(""), ""), "`")
+
+		var aliasName = strings.Trim(tbs[len(tbs)-1], strings.Join(quotes, ""))
 		fmt.Fprintf(&buf, "(%s) %s ON %v", subSQL, aliasName, condition)
 		statement.joinArgs = append(statement.joinArgs, subQueryArgs...)
 	case *builder.Builder:
@@ -775,7 +791,9 @@ func (statement *Statement) Join(joinOP string, tablename interface{}, condition
 			return statement
 		}
 		tbs := strings.Split(tp.TableName(), ".")
-		var aliasName = strings.Trim(tbs[len(tbs)-1], statement.Engine.QuoteStr())
+		quotes := append(strings.Split(statement.Engine.Quote(""), ""), "`")
+
+		var aliasName = strings.Trim(tbs[len(tbs)-1], strings.Join(quotes, ""))
 		fmt.Fprintf(&buf, "(%s) %s ON %v", subSQL, aliasName, condition)
 		statement.joinArgs = append(statement.joinArgs, subQueryArgs...)
 	default:
@@ -1156,8 +1174,12 @@ func (statement *Statement) genSelectSQL(columnStr, condSQL string, needLimit, n
 			if statement.Start != 0 || statement.LimitN != 0 {
 				oldString := buf.String()
 				buf.Reset()
+				rawColStr := columnStr
+				if rawColStr == "*" {
+					rawColStr = "at.*"
+				}
 				fmt.Fprintf(&buf, "SELECT %v FROM (SELECT %v,ROWNUM RN FROM (%v) at WHERE ROWNUM <= %d) aat WHERE RN > %d",
-					columnStr, columnStr, oldString, statement.Start+statement.LimitN, statement.Start)
+					columnStr, rawColStr, oldString, statement.Start+statement.LimitN, statement.Start)
 			}
 		}
 	}
@@ -1241,7 +1263,7 @@ func (statement *Statement) convertUpdateSQL(sqlStr string) (string, string) {
 
 	var whereStr = sqls[1]
 
-	//TODO: for postgres only, if any other database?
+	// TODO: for postgres only, if any other database?
 	var paraStr string
 	if statement.Engine.dialect.DBType() == core.POSTGRES {
 		paraStr = "$"

@@ -202,10 +202,6 @@ func (db *sqlite3) Quote(name string) string {
 	return "`" + name + "`"
 }
 
-func (db *sqlite3) QuoteStr() string {
-	return "`"
-}
-
 func (db *sqlite3) AutoIncrStr() string {
 	return "AUTOINCREMENT"
 }
@@ -234,8 +230,15 @@ func (db *sqlite3) TableCheckSql(tableName string) (string, []interface{}) {
 
 func (db *sqlite3) CreateIndexSql(tableName string, index *core.Index) string {
 	quote := db.Quote
-	return fmt.Sprintf("CREATE INDEX %v ON %v (%v);", quote(indexName(tableName, index.Name)),
-		quote(tableName), quote(strings.Join(index.Cols, quote(","))))
+	var unique string
+	var idxName string
+	if index.Type == core.UniqueType {
+		unique = " UNIQUE"
+	}
+	idxName = index.XName(tableName)
+	return fmt.Sprintf("CREATE%s INDEX %v ON %v (%v)", unique,
+		quote(idxName), quote(tableName),
+		quote(strings.Join(index.Cols, quote(","))))
 }
 
 func (db *sqlite3) DropIndexSql(tableName string, index *core.Index) string {
@@ -330,6 +333,7 @@ func (db *sqlite3) GetColumns(tableName string) ([]string, map[string]*core.Colu
 		col.Indexes = make(map[string]int)
 		col.Nullable = true
 		col.DefaultIsEmpty = true
+
 		for idx, field := range fields {
 			if idx == 0 {
 				col.Name = strings.Trim(strings.Trim(field, "`[] "), `"`)
